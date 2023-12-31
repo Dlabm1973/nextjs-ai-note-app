@@ -7,8 +7,8 @@ if (!apiKey) {
 }
 
 const pinecone = new Pinecone({
-  environment: "gcp-starter",
+  environment: "us-west4-gcp-free",
   apiKey,
 });
 
-export const notesIndex = pinecone.Index("nextjs-ai-note-app");
+export const notesIndex = pinecone.Index("noteapp");

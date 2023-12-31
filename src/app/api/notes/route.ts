@@ -42,7 +42,7 @@ export async function POST(req: Request) {
         {
           id: note.id,
           values: embedding,
-          metadata: { userId },
+          metadata: {userId},
         },
       ]);
 

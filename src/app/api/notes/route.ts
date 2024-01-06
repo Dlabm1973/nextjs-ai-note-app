@@ -7,12 +7,6 @@ import {
   updateNoteSchema,
 } from "@/lib/validation/note";
 import { auth } from "@clerk/nextjs";
-import { Response } from "next";
-
-
-// Rest of your code...
-
-
 
 export async function POST(req: Request) {
   try {
@@ -48,7 +42,7 @@ export async function POST(req: Request) {
         {
           id: note.id,
           values: embedding,
-          metadata: {userId},
+          metadata: { userId },
         },
       ]);
 

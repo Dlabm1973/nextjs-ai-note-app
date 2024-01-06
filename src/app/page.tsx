@@ -15,7 +15,7 @@ export default function Home() {
       <div className="flex items-center gap-4">
         <Image src={logo} alt="Dawie logo" width={100} height={100} />
         <span className="text-4xl font-extrabold tracking-tight lg:text-5xl">
-          Dawie
+          Kwelibra
         </span>
       </div>
       <p className="max-w-prose text-center">

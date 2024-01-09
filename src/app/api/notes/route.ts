@@ -16,7 +16,10 @@ export async function POST(req: Request) {
 
     if (!parseResult.success) {
       console.error(parseResult.error);
-      return Response.json({ error: "Invalid input" }, { status: 400 });
+      return new Response(
+        JSON.stringify({ error: "Invalid input" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const { title, content } = parseResult.data;
@@ -24,7 +27,10 @@ export async function POST(req: Request) {
     const { userId } = auth();
 
     if (!userId) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const embedding = await getEmbeddingForNote(title, content);
@@ -49,10 +55,16 @@ export async function POST(req: Request) {
       return note;
     });
 
-    return Response.json({ note }, { status: 201 });
+    return new Response(
+      JSON.stringify({ note }),
+      { status: 201, headers: { "Content-Type": "application/json" } }
+    );
   } catch (error) {
     console.error(error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
 
@@ -64,7 +76,10 @@ export async function PUT(req: Request) {
 
     if (!parseResult.success) {
       console.error(parseResult.error);
-      return Response.json({ error: "Invalid input" }, { status: 400 });
+      return new Response(
+        JSON.stringify({ error: "Invalid input" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const { id, title, content } = parseResult.data;
@@ -72,13 +87,19 @@ export async function PUT(req: Request) {
     const note = await prisma.note.findUnique({ where: { id } });
 
     if (!note) {
-      return Response.json({ error: "Note not found" }, { status: 404 });
+      return new Response(
+        JSON.stringify({ error: "Note not found" }),
+        { status: 404, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const { userId } = auth();
 
     if (!userId || userId !== note.userId) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const embedding = await getEmbeddingForNote(title, content);
@@ -103,10 +124,16 @@ export async function PUT(req: Request) {
       return updatedNote;
     });
 
-    return Response.json({ updatedNote }, { status: 200 });
+    return new Response(
+      JSON.stringify({ updatedNote }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
   } catch (error) {
     console.error(error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
 
@@ -118,7 +145,10 @@ export async function DELETE(req: Request) {
 
     if (!parseResult.success) {
       console.error(parseResult.error);
-      return Response.json({ error: "Invalid input" }, { status: 400 });
+      return new Response(
+        JSON.stringify({ error: "Invalid input" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const { id } = parseResult.data;
@@ -126,13 +156,19 @@ export async function DELETE(req: Request) {
     const note = await prisma.note.findUnique({ where: { id } });
 
     if (!note) {
-      return Response.json({ error: "Note not found" }, { status: 404 });
+      return new Response(
+        JSON.stringify({ error: "Note not found" }),
+        { status: 404, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const { userId } = auth();
 
     if (!userId || userId !== note.userId) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     await prisma.$transaction(async (tx) => {
@@ -140,10 +176,16 @@ export async function DELETE(req: Request) {
       await notesIndex.deleteOne(id);
     });
 
-    return Response.json({ message: "Note deleted" }, { status: 200 });
+    return new Response(
+      JSON.stringify({ message: "Note deleted" }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
   } catch (error) {
     console.error(error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
 

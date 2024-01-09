@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "FlowBrain - Notes",
+  title: "Kwelibra - Note",
 };
 
 export default async function NotesPage() {

@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  title: "Kwelibra - Notes",
   title: "Kwelibra - Note",
 };
 

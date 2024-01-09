@@ -7,7 +7,7 @@ import { ChatCompletionMessage } from "openai/resources/index.mjs";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const body = await req.json() as { messages: ChatCompletionMessage[] };
     const messages: ChatCompletionMessage[] = body.messages;
 
     const messagesTruncated = messages.slice(-6);
@@ -24,15 +24,16 @@ export async function POST(req: Request) {
       filter: { userId },
     });
 
-    const relevantNotes = await prisma.note.findMany({
-      where: {
-        id: {
-          in: vectorQueryResponse.matches.map((match) => match.id),
+    if (vectorQueryResponse && vectorQueryResponse.matches) {
+      const relevantNotes = await prisma.note.findMany({
+        where: {
+          id: {
+            in: vectorQueryResponse.matches.map((match) => match.id),
+          },
         },
-      },
-    });
+      });
 
-    console.log("Relevant notes found: ", relevantNotes);
+      console.log("Relevant notes found: ", relevantNotes);
 
     const systemMessage: ChatCompletionMessage = {
       role: "assistant", // Ensure role is of type RoleType
@@ -44,14 +45,15 @@ export async function POST(req: Request) {
           .join("\n\n"),
     };
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      stream: true,
-      messages: [systemMessage, ...messagesTruncated],
-    });
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        stream: true,
+        messages: [systemMessage, ...messagesTruncated],
+      });
 
-    const stream = OpenAIStream(response);
-    return new StreamingTextResponse(stream);
+      const stream = OpenAIStream(response);
+      return new StreamingTextResponse(stream);
+    }
   } catch (error) {
     console.error(error);
     return new Response(
@@ -60,3 +62,4 @@ export async function POST(req: Request) {
     );
   }
 }
+
